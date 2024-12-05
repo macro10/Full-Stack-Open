@@ -1,1 +1,1 @@
-read me!
+My exercises/programs from University of Helsinki's course, Full Stack Open
