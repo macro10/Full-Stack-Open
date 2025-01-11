@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'https://part3-hidden-sun-5253.fly.dev/api/notes'
+const baseUrl = '/api/notes'
 
 const getAll = () => {
   const request = axios.get(baseUrl)
