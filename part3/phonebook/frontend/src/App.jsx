@@ -67,13 +67,20 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setErrorMessage(
+          `Added ${nameObject.name}`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
-    setErrorMessage(
-      `Added ${nameObject.name}`
-    )
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
+      .catch(error => {
+        setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+    
   }
 
   const handleNameChange = (event) => {
