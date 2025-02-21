@@ -32,4 +32,9 @@ noteSchema.set('toJSON', {
   }
 })
 
+noteSchema.statics.deleteAll = async function() {
+  await this.deleteMany({})
+  console.log('All notes have been cleared from the database')
+}
+
 module.exports = mongoose.model('Note', noteSchema)
