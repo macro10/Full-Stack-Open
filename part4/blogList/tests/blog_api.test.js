@@ -6,14 +6,34 @@ const supertest = require('supertest')
 const assert = require('node:assert')
 const app = require('../app')
 const api = supertest(app)
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
+let token = null
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
+
   console.log('cleared')
 
+  // create test user
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'boot', passwordHash })
+  await user.save()
+
+  // login and get token
+  const response = await api
+    .post('/api/login')
+    .send({ username: 'boot', password: 'sekret' })
+
+  token = response.body.token
+
   const blogObjects = helper.initialBlogs
-    .map(blog => new Blog(blog))
+    .map(blog => new Blog({
+      ...blog,
+      user: user._id
+    }))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
 })
@@ -44,6 +64,7 @@ test('a valid blog can be added ', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -55,7 +76,7 @@ test('a valid blog can be added ', async () => {
   assert(contents.includes("what is windows"))
 })
 
-test('if likes property is missing, if defaults to 0', async () => {
+test('if likes property is missing from added blog, if defaults to 0', async () => {
   const newBlog = {
     title: "Blog without likes",
     author: "Unknown",
@@ -64,6 +85,7 @@ test('if likes property is missing, if defaults to 0', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -80,6 +102,7 @@ test('blog without title is not added', async () => {
   
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
   
@@ -96,11 +119,29 @@ test('blog without url is not added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
   
     const blogsAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+test('adding a blog fails with proper status code if token is not provided', async () => {
+  const newBlog = {
+    title: "test blog",
+    author: "test author",
+    url: "http://test.com",
+    likes: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
 
