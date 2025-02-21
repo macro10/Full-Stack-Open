@@ -63,9 +63,19 @@ app.put('/api/notes/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-const PORT = process.env.PORT
-app.listen(PORT, () => {
+const cleanupOnStartup = async () => {
+  try {
+    await Note.deleteAll()
+    console.log('Database cleaned on startup')
+  } catch (error) {
+    console.error('Error during startup database cleanup', error)
+  }
+}
+
+const PORT = process.env.PORT || 3000
+app.listen(PORT, '0.0.0.0', async () => {
   console.log(`Server running on port ${PORT}`)
+  await cleanupOnStartup()
 })
 
 const errorHandler = (error, request, response, next) => {

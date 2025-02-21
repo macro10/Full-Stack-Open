@@ -7,21 +7,24 @@
     "node": "20.11.0"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
     "build:ui": "rm -rf dist && cd ../frontend/ && npm run build && cp -r dist ../backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "cross-env NODE_ENV=test node --test"
   },
   "author": "McHale Trotter",
   "license": "HPU",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "4.0",
     "mongoose": "^8.9.5"
   },
@@ -29,8 +32,10 @@
     "@eslint/js": "^9.18.0",
     "@flydotio/dockerfile": "^0.6.1",
     "@stylistic/eslint-plugin-js": "^2.13.0",
+    "cross-env": "^7.0.3",
     "eslint": "^9.18.0",
     "globals": "^15.14.0",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
   }
 }

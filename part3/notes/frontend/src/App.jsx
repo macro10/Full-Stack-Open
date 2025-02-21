@@ -67,10 +67,10 @@ const App = () => {
     : notes.filter(note => note.important === true)
 
   return (
-    <div>
+    <div className="container">
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-      <div>
+      <div className="controls">
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
         </button>
