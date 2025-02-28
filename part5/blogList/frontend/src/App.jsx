@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +14,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  
+  const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogListUser')
@@ -55,6 +58,7 @@ const App = () => {
 
   const addBlog = (event) => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
     const blogObject = {
       title: newTitle,
       author: newAuthor,
@@ -125,33 +129,35 @@ const App = () => {
   )
 
   const blogForm = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={addBlog}>
-        title:<input
-          name="title"
-          value={newTitle}
-          onChange={handleBlogChange}
-          placeholder="title"
-        />
-        <br></br>
-        author:<input
-          name="author"
-          value={newAuthor}
-          onChange={handleBlogChange}
-          placeholder="author"
-        />
-        <br></br>
-        url:<input
-          name="url"
-          value={newUrl}
-          onChange={handleBlogChange}
-          placeholder="url"
-        />
-        <br></br>
-        <button type="submit">create</button>
-      </form>
-    </div>
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <div>
+        <h2>create new</h2>
+        <form onSubmit={addBlog}>
+          title:<input
+            name="title"
+            value={newTitle}
+            onChange={handleBlogChange}
+            placeholder="title"
+          />
+          <br></br>
+          author:<input
+            name="author"
+            value={newAuthor}
+            onChange={handleBlogChange}
+            placeholder="author"
+          />
+          <br></br>
+          url:<input
+            name="url"
+            value={newUrl}
+            onChange={handleBlogChange}
+            placeholder="url"
+          />
+          <br></br>
+          <button type="submit">create</button>
+        </form>
+      </div>
+    </Togglable>
   )
 
 
