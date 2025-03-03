@@ -70,20 +70,17 @@ const App = () => {
     }, 5000)
   }
 
-  const handleBlogChange = (event) => {
-    const { name, value } = event.target
-    switch(name) {
-      case 'title':
-        setNewTitle(value)
-        break
-      case 'author':
-        setNewAuthor(value)
-        break
-      case 'url':
-        setNewUrl(value)
-        break
-      default:
-        break
+  const updateBlog = async (blogToUpdate) => {
+    try {
+      const updatedBlog = await blogService.update(blogToUpdate.id, blogToUpdate)
+      setBlogs(blogs.map(blog =>
+        blog.id === updatedBlog.id ? updatedBlog : blog
+      ))
+    } catch (exception) {
+      setErrorMessage('Error updating blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
@@ -118,39 +115,6 @@ const App = () => {
     </div>
   )
 
-  const blogForm = () => (
-    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-      <div>
-        <h2>create new</h2>
-        <form onSubmit={addBlog}>
-          title:<input
-            name="title"
-            value={newTitle}
-            onChange={handleBlogChange}
-            placeholder="title"
-          />
-          <br></br>
-          author:<input
-            name="author"
-            value={newAuthor}
-            onChange={handleBlogChange}
-            placeholder="author"
-          />
-          <br></br>
-          url:<input
-            name="url"
-            value={newUrl}
-            onChange={handleBlogChange}
-            placeholder="url"
-          />
-          <br></br>
-          <button type="submit">create</button>
-        </form>
-      </div>
-    </Togglable>
-  )
-
-
   if (user === null) {
     return (
       <div>
@@ -179,7 +143,11 @@ const App = () => {
         />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog}/>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+          />
         )}
     </div>
   )
