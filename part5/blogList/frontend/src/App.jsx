@@ -70,6 +70,24 @@ const App = () => {
     }, 5000)
   }
 
+  const deleteBlog = async (blogToDelete) => {
+    try {
+      if (window.confirm(`Remove blog ${blogToDelete.title} by ${blogToDelete.author}`)) {
+        await blogService.remove(blogToDelete.id)
+        setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id))
+        setErrorMessage(`Deleted ${blogToDelete.title}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      }
+    } catch (exception) {
+      setErrorMessage('Error deleting blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
   const updateBlog = async (blogToUpdate) => {
     try {
       const updatedBlog = await blogService.update(blogToUpdate.id, blogToUpdate)
@@ -142,12 +160,15 @@ const App = () => {
           createBlog={addBlog}
         />
         </Togglable>
-        {blogs.map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlog={updateBlog}
-          />
+        {blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map(blog =>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              updateBlog={updateBlog}
+              deleteBlog={deleteBlog}
+            />
         )}
     </div>
   )
