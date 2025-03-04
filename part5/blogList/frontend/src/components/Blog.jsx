@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog, deleteBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -25,6 +25,10 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     }
     updateBlog(updatedBlog)
   }
+
+  const showDeleteButton = () => {
+    return blog.user && user && blog.user.username === user.username
+  }
   
   return (
     <div style={blogStyle}>
@@ -42,10 +46,12 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
             <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.user?.name}</div>
-          <button onClick={() => deleteBlog(blog)}>delete</button>
+          {showDeleteButton() && (
+            <button onClick={() => deleteBlog(blog)}>delete</button>
+          )}
         </div>
-    )}
-  </div>
+      )}
+    </div>
   )
 }
 
