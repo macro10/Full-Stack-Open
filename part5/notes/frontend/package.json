@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server -p3000 --watch db.json"
+    "server": "json-server -p3000 --watch db.json",
+    "test": "vitest run"
   },
   "dependencies": {
     "axios": "^1.7.9",
@@ -16,13 +17,20 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "@vitest/coverage-v8": "^3.0.7",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "vite": "^4.4.5"
+    "eslint-plugin-vitest-globals": "^1.5.0",
+    "jsdom": "^26.0.0",
+    "vite": "^4.4.5",
+    "vitest": "^3.0.7"
   }
 }
