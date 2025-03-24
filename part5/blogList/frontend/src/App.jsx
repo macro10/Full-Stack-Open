@@ -62,6 +62,10 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
+        const blogWithUser = {
+          ...returnedBlog,
+          user: returnedBlog.user || user
+        }
         setBlogs(blogs.concat(returnedBlog))
       })
 
