@@ -150,9 +150,11 @@ const App = () => {
     )
   }
 
+  /*
   if (!blogs || blogs.length === 0) {
     return <div>Loading...</div>
   }
+  */
 
   return (
     <div>
@@ -167,17 +169,19 @@ const App = () => {
           createBlog={addBlog}
         />
       </Togglable>
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlog={updateBlog}
-            deleteBlog={deleteBlog}
-            user={user}
-          />
-        )}
+      {!blogs ? (<div>Loading...</div>) : (
+        blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map(blog =>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              updateBlog={updateBlog}
+              deleteBlog={deleteBlog}
+              user={user}
+            />
+          )
+      )}
     </div>
   )
 }
