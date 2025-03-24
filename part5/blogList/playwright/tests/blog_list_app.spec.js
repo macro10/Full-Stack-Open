@@ -92,6 +92,52 @@ describe('Blog app', () => {
 
       await expect(page.getByText('test blog McHale Trotter')).not.toBeVisible()
     })
+
+    test('delete button is only visible to blog creator', async ({ page, request }) => {
+      // create a blog as first user
+      await createBlog(page, {
+        title: 'test blog',
+        author: 'McHale Trotter',
+        url: 'http://test.com'
+      })
+
+      await page.waitForSelector('.blog:has-text("test blog")')
+
+      // create another user
+      await request.post('/api/users', {
+        data: {
+          name: 'Another User',
+          username: 'another',
+          password: '1234567'
+        }
+      })
+
+      // logout first user
+      await page.getByRole('button', { name: 'logout' }).click()
+
+      // login as new user
+      await loginWith(page, 'another', '1234567')
+
+      // view the blog details
+      await page.waitForSelector('.blog:has-text("test blog McHale Trotter")')
+      await page.getByRole('button', { name: 'view' }).click()
+
+      // verify delete is not visible for new user
+      await expect(page.getByRole('button', { name: 'delete' })).not.toBeVisible()
+
+      // logout new user
+      await page.getByRole('button', { name: 'logout' }).click()
+
+      // login with original user
+      await loginWith(page, 'macro', '1234567')
+
+      // view blog details again
+      await page.waitForSelector('.blog:has-text("test blog McHale Trotter")')
+      await page.getByRole('button', { name: 'view' }).click()
+
+      // verify delete button is visible for original user
+      await expect(page.getByRole('button', { name: 'delete' })).toBeVisible()
+    })
   })
 })
 
