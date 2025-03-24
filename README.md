@@ -1,1 +1,1 @@
-My exercises/programs from University of Helsinki's course, Full Stack Open
+My exercises/projects from University of Helsinki's rigid full-stack software development course, Full Stack Open
