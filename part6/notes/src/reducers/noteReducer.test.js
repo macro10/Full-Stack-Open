@@ -28,7 +28,7 @@ describe('noteReducer', () => {
         id: 1
       },
       {
-        content: 'state changes are made wiith actions',
+        content: 'state changes are made with actions',
         important: false,
         id: 2
       }]
